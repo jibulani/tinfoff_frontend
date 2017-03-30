@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h1 class="head">TODO List</h1>
+<div class="container">
+    <div class="add-task">
+        <input class="add-task__input" placeholder="Имя задачи" autofocus>
+    </div>
+    <div class="filters">
+        <div data-filter="all" class="filters__item filters__item_selected">все</div>
+        <div data-filter="done" class="filters__item">завершенные</div>
+        <div data-filter="todo" class="filters__item">незавершенные</div>
+    </div>	
+    <ul class="list"></ul>
+    <div class="statistic">
+        Всего:
+        <div class="statistic__total">3</div>
+        Завершено:
+        <div class="statistic__done">1</div>
+        Осталось:
+        <div class="statistic__left">2</div>
+    </div>
+</div>
+<template id="todoTemplate" style="display: none">
+    <li class="list__item task" style="padding-top: 5px;padding-bottom: 5px;">
+        <div class="task__status task__status_todo"></div>
+		<!--<p style="clear: left;">-->
+		<div style="clear: left; height:30px;">
+			<table style="float: left;">
+				<tr>
+					<td class="task__time" style="font-size: 10px; font-style: italic;"></td>
+				</tr>
+				<tr>
+					<td class="task__date" style="font-size: 10px; font-style: italic;"></td>
+				</tr>
+			</table>
+			<div style="display:flex;justify-content:center;align-items:center;height:30px; float: left; padding-left: 3px;"><span class="task__name"></span></div>
+		<!--</p>-->
+		</div>
+        
+        <div class="task__delete-button">❌</div>
+    </li>
+</template>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2017 by jibulani (http://jsbin.com/lomunu/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+.github-user {
+        width: 280px;
+        border: 2px solid #434343;
+        padding: 10px;
+        overflow: hidden;
+        font-family: sans-serif;
+    }
+
+    .github-user img {
+        width: 60px;
+        height: auto;
+        float: left;
+        margin-right: 20px;
+    }
+
+    .github-user a {
+        display: block;
+        margin-top: 5px;
+        font-size: 20px;
+    }
+
+    .error {
+        background-color: rgba(200, 0, 0, 0.2);
+        border-left: 4px solid rgba(200, 0, 0, 0.7);
+        padding: 10px;
+        font-family: sans-serif;
+    }
+
+    .random-button {
+        margin: 20px 0;
+        font-size: 20px;
+        border: 2px solid #434343;
+        padding: 12px 16px;
+        border-radius: 4px;
+        background: #ffffff;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+</style>
+</head>
+<body>
+<button type="button" id="randomize" class="random-button">refresh</button>
+
+<div class="github-user hidden" id="user">
+    <img src="" alt="">
+    Github profile:
+    <a href=""></a>
+</div>
+
+<p id="error" class="error hidden">
+    Ошибка
+</p>
+<script id="jsbin-javascript">
+var randomButtonElement = document.getElementById('randomize');
+var randomUserElement = document.getElementById('user');
+var errorElement = document.getElementById('error');
+
+randomButtonElement.onclick = function () {
+    makeGetRequest('https://api.github.com/users')
+      .then(request => {
+        var data;
+            try {
+                data = JSON.parse(request)
+            } catch (err) {
+                showError(new Error('Ошибка при чтении из json'));
+            }
+        if (data) {
+                var user = data[Math.floor(Math.random() * data.length)];
+                loadImage(user.avatar_url)
+                  .then(img => {
+                    hideError();
+                    drawUser(user);
+                  })
+                  .catch(error => showError(error));
+            }
+      })
+      .catch(error => showError(error));
+};
+
+function makeGetRequest(url) {
+    return new Promise(function(resolve, reject){
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState != 4) return;
+
+        if (xhr.status != 200) {
+            var error = new Error('Ошибка ' + xhr.status);
+            error.code = xhr.statusText;
+            reject(error);
+        } else {
+            resolve(xhr.responseText);
+        }
+
+      };
+
+      xhr.send();
+    });
+    
+}
+
+function showError(err) {
+    errorElement.textContent = err;
+    errorElement.classList.remove('hidden');
+    randomUserElement.classList.add('hidden');
+}
+
+function hideError() {
+    errorElement.classList.add('hidden');
+    randomUserElement.classList.remove('hidden');
+}
+
+
+function loadImage(imageUrl) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+
+      img.onload = function () {
+          resolve(this.img);
+      };
+
+      img.onerror = function () {
+        reject(new Error('Что-то пошло не так'));
+      };
+      img.src = imageUrl;
+      });
+}
+
+function drawUser(data) {
+    var img = randomUserElement.querySelector('img');
+    var link = randomUserElement.querySelector('a');
+    img.src = data.avatar_url;
+    img.alt = data.login;
+    link.href = data.html_url;
+    link.textContent = data.login;
+}
+
+</script>
+</body>
+</html>
