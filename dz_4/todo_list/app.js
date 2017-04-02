@@ -79,6 +79,8 @@ function setTodoStatusClassName(todo, flag) {
     todo.classList.toggle('task_done', !flag);
 }
 
+
+
 function onListClick(event) {
     var target = event.target;
     var element;
@@ -473,14 +475,22 @@ function changeTodoStatus(element) {
     // меняем статус в todoList
     task.status = isTodo ? 'done' : 'todo';
 
+    var newTask = createNewTodo(task.name);
+    newTask.status = task.status
+    todoList.push(newTask);
+    var elem = addTodoFromTemplate(newTask)
+    listElement.insertBefore(elem, listElement.firstElementChild);
+ 
     // при фильтре "все" нужно поменять класс у тудушки, иначе удалить
     if (currentFilter === filterValues.ALL) {
-        setTodoStatusClassName(element, !isTodo);
+        setTodoStatusClassName(elem, !isTodo);
     } else {
-        listElement.removeChild(element);
+        listElement.removeChild(elem);
     }
 
     // и поменять статистику
+    deleteTodo(element);
+    stats.addToStats(!isTodo);
     stats.changeStats(!isTodo);
 }
 
